@@ -1,39 +1,41 @@
-# Changes to PostCSS Cascade Layers
+# Changes to PostCSS Color Function
 
-### 1.1.1 (September 17, 2022)
+### 1.1.1 (July 8, 2022)
 
-- Fix pre-defined layer order in nested `@layer` rules.
+- Fix case insensitive matching.
 
-### 1.1.0 (September 14, 2022)
+### 1.1.0 (April 4, 2022)
 
-- Add support for `@scope` and `@container` as parent rules for `@layer`
+- Allow percentage units in XYZ color spaces.
 
-### 1.0.6 (September 7, 2022)
+```css
+.percentages {
+	color-1: color(xyz-d50 64.331% 19.245% 16.771%);
+	color-2: color(xyz-d65 64.331% 19.245% 16.771%);
+	color-3: color(xyz 64.331% 19.245% 16.771%);
 
-- Fix broken `@keyframes` in `@layer`.
+	/* becomes */
 
-### 1.0.5 (July 8, 2022)
+	color-1: rgb(245,0,135);
+	color-2: rgb(253,0,127);
+	color-3: rgb(253,0,127);
+}
+```
 
-- Fix case insensitive `@layer` matching (`@LaYeR`).
-- Updated `@csstools/selector-specificity` to `2.0.2` (patch)
+### 1.0.3 (March 8, 2022)
 
-### 1.0.4 (June 23, 2022)
+- Fix gamut mapping giving overly unsaturated colors.
+- Implement powerless color components in gamut mapping.
 
-- Fix selector order with any pseudo element. This plugin will no longer re-order selectors.
+### 1.0.2 (February 12, 2022)
 
-### 1.0.3 (June 4, 2022)
+- Updated `@csstools/postcss-progressive-custom-properties` to `1.1.0`.
 
-- Update `@csstools/selector-specificity` (major)
+### 1.0.1 (February 11, 2022)
 
-### 1.0.2 (May 20, 2022)
+- Add tests for percentage values in non-xyz color spaces.
+- Ignore percentage values in xyz color space as these are not supported.
 
-- Use only simple `:not(#\#)` selectors to adjust specificity.
-
-### 1.0.1 (May 17, 2022)
-
-- Process CSS after most other plugins to ensure correct analysis and transformation of sugary CSS.
-- Fix selector order with `:before` and other pseudo elements.
-
-### 1.0.0 (May 12, 2022)
+### 1.0.0 (February 7, 2022)
 
 - Initial version

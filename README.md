@@ -1,107 +1,170 @@
-# @csstools/normalize.css [<img src="https://csstools.github.io/normalize.css/logo.svg" alt="normalize" width="90" height="90" align="right">][@csstools/normalize.css]
+# PostCSS Color Function [<img src="https://postcss.github.io/postcss/logo.svg" alt="PostCSS Logo" width="90" height="90" align="right">][postcss]
 
-[@csstools/normalize.css] is a CSS library that provides consistent,
-cross-browser default styling of HTML elements.
+[<img alt="npm version" src="https://img.shields.io/npm/v/@csstools/postcss-color-function.svg" height="20">][npm-url] [<img alt="CSS Standard Status" src="https://cssdb.org/images/badges/color-function.svg" height="20">][css-url] [<img alt="Build Status" src="https://github.com/csstools/postcss-plugins/workflows/test/badge.svg" height="20">][cli-url] [<img alt="Discord" src="https://shields.io/badge/Discord-5865F2?logo=discord&logoColor=white">][discord]
 
-## Usage
+[PostCSS Color Function] lets you use the `color` function in
+CSS, following the [CSS Color] specification.
 
-```html
-<link href="https://unpkg.com/@csstools/normalize.css" rel="stylesheet" />
-```
+```pcss
+.color {
+	color: color(display-p3 0.64331 0.19245 0.16771);
+}
 
-## Install
+:root {
+	--a-color: color(srgb 0.64331 0.19245 0.16771);
+}
 
-```sh
-npm install @csstools/normalize.css --save
-```
+/* becomes */
 
-#### Webpack Usage
+.color {
+	color: rgb(179,35,35);
+}
 
-Import [@csstools/normalize.css] in CSS:
-
-```css
-@import '~@csstools/normalize.css';
-```
-
-Alternatively, import [@csstools/normalize.css] in JS:
-
-```js
-import '@csstools/normalize.css';
-```
-
-In `webpack.config.js`, use the appropriate loaders:
-
-```js
-module.exports = {
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: [ 'style-loader', 'css-loader' ]
-      }
-    ]
-  }
+:root {
+	--a-color: rgb(164,49,43);
 }
 ```
 
-**Download**
+## Usage
 
-See https://csstools.github.io/normalize.css/latest/normalize.css
+Add [PostCSS Color Function] to your project:
 
-## What does it do?
+```bash
+npm install postcss @csstools/postcss-color-function --save-dev
+```
 
-* Normalizes styles for a wide range of elements.
-* Corrects bugs and common browser inconsistencies.
-* Explains what code does using detailed comments.
+Use it as a [PostCSS] plugin:
 
-## Browser support
+```js
+const postcss = require('postcss');
+const postcssColorFunction = require('@csstools/postcss-color-function');
 
-* Chrome (last 3)
-* Edge (last 3)
-* Firefox (last 3)
-* Firefox ESR
-* Opera (last 3)
-* Safari (last 2)
-* iOS Safari (last 2)
+postcss([
+	postcssColorFunction(/* pluginOptions */)
+]).process(YOUR_CSS /*, processOptions */);
+```
 
-## Contributing
+[PostCSS Color Function] runs in all Node environments, with special
+instructions for:
 
-Please read the [contribution guidelines](CONTRIBUTING.md) in order to make the
-contribution process easy and effective for everyone involved.
+| [Node](INSTALL.md#node) | [PostCSS CLI](INSTALL.md#postcss-cli) | [Webpack](INSTALL.md#webpack) | [Create React App](INSTALL.md#create-react-app) | [Gulp](INSTALL.md#gulp) | [Grunt](INSTALL.md#grunt) |
+| --- | --- | --- | --- | --- | --- |
 
-## Similar Projects
+## Options
 
-- [modern-normalize.css](https://github.com/sindresorhus/modern-normalize) - An
-alternative to normalize.css, adhering to a minimal set of normalizations and
-common developer expectations and preferences.
-- [opinionate.css](https://github.com/adamgruber/opinionate.css) - A supplement
-to normalize.css with opinionated rules.
-- [remedy.css](https://github.com/mozdevs/cssremedy) - An alternative to
-normalize.css, adhering to different common developer expectations and
-preferences.
-- [sanitize.css](https://github.com/csstools/sanitize.css) - An alternative to
-normalize.css, adhering to common developer expectations and preferences.
+### preserve
 
-## Differences from `necolas/normalize.css`
+The `preserve` option determines whether the original notation
+is preserved. By default, it is not preserved.
 
-Nicolas Gallagher and I started writing normalize.css together. I named and
-created the normalize.css repository with the help of Paul Irish and Ben Alman.
-I transferred the repository to Nicolas, who turned it into a “household” CSS
-library.
+```js
+postcssColorFunction({ preserve: true })
+```
 
-Later, I resumed authorship of normalize.css with Luciano Battagliero. Together,
-we tagged, deprecated, and removed “opinionated” styles — styles developers
-often prefer but which do not fix bugs or “normalize” browser differences.
+```pcss
+.color {
+	color: color(display-p3 0.64331 0.19245 0.16771);
+}
 
-Later, Nicolas resumed authorship and the issue of whether to include or omit
-the opinionated styles forced us to split.
+:root {
+	--a-color: color(srgb 0.64331 0.19245 0.16771);
+}
 
-I continue working on the normalize.css project, currently under the “csstools”
-tag. I hope one day our differences are resolved and the projects are one again.
+/* becomes */
 
-## Acknowledgements
+.color {
+	color: rgb(179,35,35);
+	color: color(display-p3 0.64331 0.19245 0.16771);
+}
 
-normalize.css is a project by [Jonathan Neal](https://github.com/jonathantneal),
-co-created with [Nicolas Gallagher](https://github.com/necolas).
+:root {
+	--a-color: rgb(164,49,43);
+}
 
-[@csstools/normalize.css]: https://github.com/csstools/normalize.css
+@supports (color: color(srgb 0 0 0)) {
+:root {
+	--a-color: color(srgb 0.64331 0.19245 0.16771);
+}
+}
+```
+
+### enableProgressiveCustomProperties
+
+The `enableProgressiveCustomProperties` option determines whether the original notation
+is wrapped with `@supports` when used in Custom Properties. By default, it is enabled.
+
+⚠️ We only recommend disabling this when you set `preserve` to `false` or if you bring your own fix for Custom Properties. See what the plugin does in its [README](https://github.com/csstools/postcss-plugins/tree/main/plugins/postcss-progressive-custom-properties#readme).
+
+```js
+postcssColorFunction({ enableProgressiveCustomProperties: false })
+```
+
+```pcss
+.color {
+	color: color(display-p3 0.64331 0.19245 0.16771);
+}
+
+:root {
+	--a-color: color(srgb 0.64331 0.19245 0.16771);
+}
+
+/* becomes */
+
+.color {
+	color: rgb(179,35,35);
+	color: color(display-p3 0.64331 0.19245 0.16771);
+}
+
+:root {
+	--a-color: rgb(164,49,43);
+	--a-color: color(srgb 0.64331 0.19245 0.16771);
+}
+```
+
+_Custom properties do not fallback to the previous declaration_
+
+## Supported Color Spaces
+
+```css
+.color-spaces {
+	color: color(a98-rgb 0.803 0.484 0.944);
+	color: color(display-p3 0.8434 0.509 0.934);
+	color: color(prophoto-rgb 0.759 0.493 0.898);
+	color: color(rec2020 0.772 0.491 0.920);
+	color: color(srgb 0.897 0.488 0.959);
+	color: color(srgb-linear 0.783 0.203 0.910);
+	color: color(xyz 0.560 0.377 0.904);
+	color: color(xyz-d50 0.550 0.375 0.680);
+	color: color(xyz-d65 0.560 0.377 0.904);
+}
+```
+
+## Out of gamut colors
+
+Depending on the browser implementation out of gamut colors may be clipped, resulting in a different color.<br>
+Fallback values generated by [PostCSS Color Function] are always mapped to a close alternative in sRGB.
+
+When setting `preserve` to `true` the original values will be used by some browsers and these may be clipped.<br>
+Certain browsers will have an incorrect color if this occurs.
+
+If the plugin detects out of gamut colors it will emit a warning :
+
+> "color(srgb-linear -0.01656 0.23079 0.25298)" is out of gamut for "srgb-linear". When "preserve: true" is set this will lead to unexpected results in some browsers.
+
+To resolve this warning pick a larger color space when declaring the original value.
+
+## Copyright : color conversions
+
+This software or document includes material copied from or derived from https://github.com/w3c/csswg-drafts/tree/main/css-color-4. Copyright © 2022 W3C® (MIT, ERCIM, Keio, Beihang).
+
+[cli-url]: https://github.com/csstools/postcss-plugins/actions/workflows/test.yml?query=workflow/test
+[css-url]: https://cssdb.org/#color-function
+[discord]: https://discord.gg/bUadyRwkJS
+[npm-url]: https://www.npmjs.com/package/@csstools/postcss-color-function
+
+[Gulp PostCSS]: https://github.com/postcss/gulp-postcss
+[Grunt PostCSS]: https://github.com/nDmitry/grunt-postcss
+[PostCSS]: https://github.com/postcss/postcss
+[PostCSS Loader]: https://github.com/postcss/postcss-loader
+[PostCSS Color Function]: https://github.com/csstools/postcss-plugins/tree/main/plugins/postcss-color-function
+[CSS Color]: https://www.w3.org/TR/css-color-4/#funcdef-color
